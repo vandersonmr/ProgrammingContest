@@ -29,4 +29,20 @@ class Graph {
     vector<int>& getEdges(int a) {
       return adj[a];
     }  
+
+    bool isEulerian();
+
+    bool isConnected();
+
+    void DFSUtil(int v, bool visited[]);
 };
+
+
+void Graph::DFSUtil(int v, bool visited[]) {
+  visited[v] = true;
+
+  vector<int>::iterator i;
+  for (i = adj[v].begin(); i != adj[v].end(); ++i)
+    if (!visited[*i])
+      DFSUtil(*i, visited);
+}
