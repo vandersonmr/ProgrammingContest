@@ -9,31 +9,13 @@ using namespace std;
 
 struct Vertice {
   double x, y;
-  double chave;
-
-  bool operator< (const Vertice &a) const {
-    return chave < a.chave;
-  }
 };
 
 double w(const Vertice &a, const Vertice &b) {
   return sqrt(pow((a.x - b.x), 2) + pow((a.y - b.y), 2));
 }
 
-double prim(vector<Vertice> &G) {
-  double total = 0;
-  while (!G.empty()) {
-    sort_heap(G.begin(), G.end());
-    Vertice u = G.front();
-    pop_heap(G.begin(), G.end()); 
-    G.pop_back();
-    total += u.chave;
-    for (int i = 0; i < G.size(); i++) 
-      if (w(u, G[i]) < G[i].chave) 
-        G[i].chave = w(u, G[i]);
-  }
-  return total/100;
-}
+#define INF 9999999
 
 int main() {
   int c;
@@ -42,18 +24,38 @@ int main() {
     int n;
     scanf("%d\n", &n); 
     vector<Vertice> G;
+    double weight[n];
+    bool visited[n];
     for (int i = 0; i < n; i++) {
-      double x, y;
-      scanf("%lf %lf\n", &x, &y);
       Vertice a;
-      a.x = x;
-      a.y = y;
-      a.chave = INT_MAX;
-      if (i == 0) a.chave = 0; 
+      scanf("%lf %lf\n", &a.x, &a.y);
+      weight[i] = INF;
+      visited[i] = false;
       G.push_back(a);
     }
-    make_heap(G.begin(), G.end());
-    printf("%.2lf\n", prim(G));
+    
+    weight[0] = 0;
+
+    double T = 0;
+    for (int t = 0; t < n; t++) {
+      int i = 0;
+      double min = INF;
+      for (int u = 0; u < n; u++) {
+        if (!visited[u] && weight[u] < min) {
+          min = weight[u];
+          i = u;
+        }
+      }
+      visited[i] = true;
+      T += min;
+      for (int u = 0; u < n; u++) {
+        if (!visited[u]) {
+          double d = w(G[i], G[u]);
+          if (d < weight[u]) weight[u] = d;
+        }
+      }
+    }
+    printf("%.2lf\n", T/100);
   }
   return 0;
 }

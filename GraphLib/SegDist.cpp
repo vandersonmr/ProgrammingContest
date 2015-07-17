@@ -1,14 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <cmath>
-#include <vector>
-#include <algorithm>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
 
-using namespace std;
-
-#define MAX 1100
+#define MAX 1123
 #define EPS 1e-9
 #define LEPS 1e-6
 #define INF 112345678
@@ -26,7 +21,7 @@ struct vetor {
   vetor(double _x, double _y) : x(_x), y(_y) {}
 };
 
-typedef struct { int id; ponto a, b; } seg;
+typedef struct { ponto a, b; } seg;
 
 vetor ponto2vetor(ponto a, ponto b) {
   return vetor(b.x - a.x, b.y - a.y);
@@ -79,51 +74,3 @@ double dseg(seg s1, seg s2) {
   return dinf < dsup ? dinf : dsup;
 }
 
-bool shorter(const pair<seg, seg>& L1, const pair<seg, seg>& L2) {
-  int A = dseg(L1.first, L1.second);
-  int B = dseg(L2.first, L2.second);
-  return A < B;
-}
-
-int main () {
-  int n;
-  scanf("%d\n", &n);
-  std::vector<seg> Graph;
-  bool visited[n];
-  double weight[n];
-
-  for (int i = 0; i < n; i++) {
-    seg L;
-    L.id = i;
-    scanf("%lf %lf %lf %lf\n", &L.a.x, &L.a.y, &L.b.x, &L.b.y); 
-    visited[i] = false;
-    weight[i] = INF;
-    Graph.push_back(L);
-  }
-
-  weight[0] = 0;
-
-  double T = 0.;
-  for (int u = 0; u < n; u++) {
-    int i = 0;
-    double svalue = INF;
-    for (int f = 0; f < n; f++) {
-      if (!visited[f] && weight[f] < svalue) { 
-        svalue = weight[f];
-        i = f;
-      }
-    }
-    visited[i] = true;
-    T += weight[i];
-    for (int j = 0; j < n; j++) {
-      if (!visited[j]) {
-        double d = dseg(Graph[j], Graph[i]);
-        if (d < weight[j]) 
-          weight[j] = d;
-      }
-    }
-  }
-  
-  printf("%.0lf\n", fabs(ceil(T - LEPS)));
-  return 0; 
-}
